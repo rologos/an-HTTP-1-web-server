@@ -1,7 +1,6 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 public class http1webserver {
     public static void main(String[] args) {
@@ -10,10 +9,19 @@ public class http1webserver {
 
         while (true) {
             try {
-                BufferedReader bf = new BufferedReader();
-                PrintWriter pw = new PrintWriter();
                 ServerSocket serverSocket = new ServerSocket(port);
-                serverSocket.accept();
+                Socket clientSocket = serverSocket.accept();
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                String request = in.readLine();
+
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+                System.out.println("Request: " + request);
+
+                out.println("HTTP/1.1 200 OK");
+                out.println("Content-Type: text/plain");
+                out.println();
+                out.println("Hello from the server!");
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
